@@ -36,12 +36,22 @@ public class GlobalVariables : MonoBehaviour
         multiplayerMenu.SetActive(true);
     }
 
+    public void OpenMainMenu() {
+        mainMenu.SetActive(true);
+        multiplayerMenu.SetActive(false);
+    }
+
     public void UpdateName(string name){
         selectedName = name;
     }
 
     public void UpdateIP(string IP){
         IPAddress = IP;
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     void Start()
