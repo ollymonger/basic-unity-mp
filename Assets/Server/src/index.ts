@@ -106,6 +106,7 @@ wss.on('connection', function connection(ws) {
                 wss.clients.forEach(function each(client) {
                     client.send(JSON.stringify({
                         type: "disconnect_response",
+                        reason: `Client ${jsonData.id} ${jsonData.name} disconnect from server.`,
                         id: jsonData.id
                     }));
                 });
@@ -114,7 +115,7 @@ wss.on('connection', function connection(ws) {
         }
     });
     ws.on('close', function(ws) {
-        console.log("A client has disconnected successfully.");
+        console.log("A client has disconnected.");
     });
 });
 
