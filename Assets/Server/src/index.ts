@@ -73,7 +73,6 @@ wss.on('connection', function connection(ws) {
                         }));
                     });
                 } else {
-                    // Json Object for error
                     ws.send(JSON.stringify({
                         type: "error",
                         message: "Server is full!"
