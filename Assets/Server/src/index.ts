@@ -129,7 +129,7 @@ wss.on('connection', function connection(ws) {
 });
 
 // listen to the http server
-server.listen(3000, () => {
+server.listen(3000, '0.0.0.0', () => {
     console.log('listening on *:3000');
 });
 
