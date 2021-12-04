@@ -82,12 +82,21 @@ wss.on('connection', function connection(ws) {
                     }));
                 });
                 break;
+            case "disconnect":
+                console.log("PlayerID: " + jsonData.id + " has disconnected");
+                playerList.splice(jsonData.id, 1);
+                wss.clients.forEach(function each(client) {
+                    client.send(JSON.stringify({
+                        type: "disconnect_response",
+                        id: jsonData.id
+                    }));
+                });
             default:
                 break;
         }
     });
     ws.on('close', function(ws) {
-        // Remove the player from the playerList array
+        console.log("A client has disconnected successfully.");
     });
 });
 
