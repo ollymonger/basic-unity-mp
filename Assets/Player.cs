@@ -86,6 +86,12 @@ public class Player : MonoBehaviour
         players[playerId].playerObject.transform.position = players[playerId].position;
     }
 
+    public void RemovePlayer(int data){
+        int playerId = (int)data;
+        Destroy(players[playerId].playerObject);
+        players[playerId] = new PlayerList() { playerId = playerId, position = new Vector3(0, 0, 0), state = PlayerState.nullState, playerName = "EmptyPlayerSlot" };
+    }
+
     public PlayerList GetPlayer(int id){
         return players[id];
     }

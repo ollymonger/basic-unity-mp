@@ -331,48 +331,60 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   players:
   - playerId: 0
+    playerName: 
     position: {x: 0, y: 0, z: 0}
     state: 0
     playerObject: {fileID: 0}
   - playerId: 0
+    playerName: 
     position: {x: 0, y: 0, z: 0}
     state: 0
     playerObject: {fileID: 0}
   - playerId: 0
+    playerName: 
     position: {x: 0, y: 0, z: 0}
     state: 0
     playerObject: {fileID: 0}
   - playerId: 0
+    playerName: 
     position: {x: 0, y: 0, z: 0}
     state: 0
     playerObject: {fileID: 0}
   - playerId: 0
+    playerName: 
     position: {x: 0, y: 0, z: 0}
     state: 0
     playerObject: {fileID: 0}
   - playerId: 0
+    playerName: 
     position: {x: 0, y: 0, z: 0}
     state: 0
     playerObject: {fileID: 0}
   - playerId: 0
+    playerName: 
     position: {x: 0, y: 0, z: 0}
     state: 0
     playerObject: {fileID: 0}
   - playerId: 0
+    playerName: 
     position: {x: 0, y: 0, z: 0}
     state: 0
     playerObject: {fileID: 0}
   - playerId: 0
+    playerName: 
     position: {x: 0, y: 0, z: 0}
     state: 0
     playerObject: {fileID: 0}
   - playerId: 0
+    playerName: 
     position: {x: 0, y: 0, z: 0}
     state: 0
     playerObject: {fileID: 0}
   localPlayerStats:
     playerId: 0
+    playerName: Olly
     state: 0
+    isLocalPlayer: 0
 --- !u!33 &351230279
 MeshFilter:
   m_ObjectHideFlags: 0
