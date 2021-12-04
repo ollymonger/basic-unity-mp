@@ -11,6 +11,7 @@ const wss = new Server({ server });
 
 interface PlayerList {
     id: number;
+    name: string;
     position: { x: number; y: number, z: number };
     state: number;
 }
@@ -31,15 +32,17 @@ wss.on('connection', function connection(ws) {
                 // Add the new player to the playerList array
                 playerList.push({
                     id: newPlayerID,
+                    name: jsonData.name,
                     position: {x: 0, y: 0, z: 0},
                     state: 1
                 });
                 
-                console.log("Generated ID: " + newPlayerID + " | PlayerList: " + JSON.stringify(playerList));
+                console.log("Generated ID: " + newPlayerID + `${jsonData.name}` + " | PlayerList: " + JSON.stringify(playerList));
                 // return this new player's ID to the client
                 ws.send(JSON.stringify({
                     type: "initial_response",
                     id: newPlayerID,
+                    name: jsonData.name,
                     position: {x: 0, y: 0, z: 0},
                     state: 1
                 }));
@@ -48,6 +51,7 @@ wss.on('connection', function connection(ws) {
                     client.send(JSON.stringify({
                         type: "add_player",
                         id: newPlayerID,
+                        name: jsonData.name,
                         position: {x: 0, y: 0, z: 0},
                         state: 1,
                     }));
@@ -81,6 +85,9 @@ wss.on('connection', function connection(ws) {
             default:
                 break;
         }
+    });
+    ws.on('close', function(ws) {
+        // Remove the player from the playerList array
     });
 });
 
