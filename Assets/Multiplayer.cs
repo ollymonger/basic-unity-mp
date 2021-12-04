@@ -16,7 +16,7 @@ public class Multiplayer : MonoBehaviour
     {
         if(GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer)
             {
-            websocket = new WebSocket("ws://localhost:3000");
+            websocket = new WebSocket("ws://"+GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().IPAddress+"/");
 
             websocket.OnOpen += () =>
             {
@@ -30,7 +30,7 @@ public class Multiplayer : MonoBehaviour
 
             websocket.OnClose += (e) =>
             {
-                Debug.Log(e.ToString());
+                 Debug.Log(e.ToString());
             };
 
             websocket.OnMessage += (bytes) =>

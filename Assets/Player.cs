@@ -101,6 +101,7 @@ public class Player : MonoBehaviour
             players[i] = new PlayerList() { playerId = i, position = new Vector3(0, 0, 0), state = PlayerState.nullState, playerName = "EmptyPlayerSlot" };
         }
         localPlayerStats.state = PlayerState.initializing;
+        localPlayerStats.playerName = GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().selectedName;
         if(GameObject.Find("GlobalVariables") != null && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
             localPlayerStats.playerId = 0;
             localPlayerStats.isLocalPlayer = true;
