@@ -101,6 +101,11 @@ public class Player : MonoBehaviour
             players[i] = new PlayerList() { playerId = i, position = new Vector3(0, 0, 0), state = PlayerState.nullState, playerName = "EmptyPlayerSlot" };
         }
         localPlayerStats.state = PlayerState.initializing;
+        if(GameObject.Find("GlobalVariables") != null && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
+            localPlayerStats.playerId = 0;
+            localPlayerStats.isLocalPlayer = true;
+            localPlayerStats.state = PlayerState.idle;
+        }
     }
 
     void Update() {
@@ -110,19 +115,13 @@ public class Player : MonoBehaviour
     }
 
     void Move() {
-        // Improve this
-        if(Input.GetKey(KeyCode.W)){
-            transform.position += new Vector3(0, 0, 0.1f);
-        }
-        if(Input.GetKey(KeyCode.S)){
-            transform.position += new Vector3(0, 0, -0.1f);
-        }
-        if(Input.GetKey(KeyCode.A)){
-            transform.position += new Vector3(-0.1f, 0, 0);
-        }
-        if(Input.GetKey(KeyCode.D)){
-            transform.position += new Vector3(0.1f, 0, 0);
-        }
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
 
+        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+
+        transform.position = Vector3.Lerp(transform.position, transform.position + movement, 0.1f);
+
+        Camera.main.transform.position = new Vector3(transform.position.x + 0.33f, Camera.main.transform.position.y, transform.position.z - 5.1f);
     }
 }
