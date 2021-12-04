@@ -30,3 +30,5 @@ The server has been written in Typescript and is used with ts-node.
 
 ### Things to add
 - Implement way to select IP and username
+- Lerp movement
+- Rotation
