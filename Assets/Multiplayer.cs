@@ -64,15 +64,15 @@ public class Multiplayer : MonoBehaviour
         await websocket.Connect();
   }
 
-  void Update()
-  {
-    #if !UNITY_WEBGL || UNITY_EDITOR
-      websocket.DispatchMessageQueue();
-    #endif
-  }
+    void Update()
+    {
+        #if !UNITY_WEBGL || UNITY_EDITOR
+        websocket.DispatchMessageQueue();
+        #endif
+    }
 
-  async void SendInitialMessage() {
-      if(websocket.State == WebSocketState.Open){
+    async void SendInitialMessage() {
+        if(websocket.State == WebSocketState.Open){
             var message = new JObject();
             message["type"] = "initial";
             if(player.localPlayerStats.playerName != null && player.localPlayerStats.playerName.Trim() == ""){
@@ -82,10 +82,10 @@ public class Multiplayer : MonoBehaviour
             }
             var json = System.Text.Encoding.UTF8.GetBytes(message.ToString());
             await websocket.Send(json);
-      }
-  }
+        }
+    }
 
-  void HandleInitialResponse(JObject data){
+    void HandleInitialResponse(JObject data){
       if(websocket.State == WebSocketState.Open){
           if(data["type"].ToObject<string>() == "error"){
               Debug.Log("Error: " + data["message"].ToObject<string>());
@@ -97,7 +97,7 @@ public class Multiplayer : MonoBehaviour
       }
   }
 
-  async void SendGetAllConnectedClients(){
+    async void SendGetAllConnectedClients(){
         if(websocket.State == WebSocketState.Open){
             var message = new JObject();
             message["type"] = "get_all_connected_clients";
@@ -107,7 +107,7 @@ public class Multiplayer : MonoBehaviour
         }
   }
 
-  void HandleGetAllConnectedClientsResponse(JObject data){
+    void HandleGetAllConnectedClientsResponse(JObject data){
       
         if(websocket.State == WebSocketState.Open){
             var players = data["playerList"];
