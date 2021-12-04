@@ -71,7 +71,11 @@ public class Multiplayer : MonoBehaviour
       if(websocket.State == WebSocketState.Open){
             var message = new JObject();
             message["type"] = "initial";
-            message["name"] = "Player";
+            if(player.localPlayerStats.playerName != null && player.localPlayerStats.playerName.Trim() == ""){
+                message["name"] = "Player";
+            } else {
+                message["name"] = player.localPlayerStats.playerName;
+            }
             var json = System.Text.Encoding.UTF8.GetBytes(message.ToString());
             await websocket.Send(json);
       }
@@ -80,7 +84,6 @@ public class Multiplayer : MonoBehaviour
   void HandleInitialResponse(JObject data){
       if(websocket.State == WebSocketState.Open){
           player.localPlayerStats.playerId = data["id"].ToObject<int>();
-          
           SendGetAllConnectedClients();
       }
   }
@@ -108,6 +111,7 @@ public class Multiplayer : MonoBehaviour
 
                     var json = new JObject();
                     json["playerId"] = playerid;
+                    json["playerName"] = client["name"].ToObject<string>();
                     json["position"] = new JObject();
                     json["position"]["x"] = position.x;
                     json["position"]["y"] = position.y;

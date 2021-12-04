@@ -17,6 +17,9 @@ public class Player : MonoBehaviour
     [Serializable]
     public struct PlayerList { 
         public int playerId;
+
+        public string playerName;
+
         public Vector3 position;
 
         public PlayerState state;
@@ -29,6 +32,9 @@ public class Player : MonoBehaviour
     [Serializable]
     public struct LocalPlayerStats {
         public int playerId;
+
+        public string playerName;
+
         public PlayerState state;
 
         public bool isLocalPlayer;
@@ -43,6 +49,7 @@ public class Player : MonoBehaviour
             
             players[playerId] = new PlayerList() { 
                 playerId = playerId, 
+                playerName = (string)data["playerName"],
                 position = new Vector3((float)data["position"]["x"], 
                 (float)data["position"]["y"], 
                 (float)data["position"]["z"]), 
@@ -55,6 +62,7 @@ public class Player : MonoBehaviour
 
             players[playerId] = new PlayerList() { 
                 playerId = playerId, 
+                playerName = (string)data["playerName"],
                 position = new Vector3((float)data["position"]["x"], 
                 (float)data["position"]["y"], 
                 (float)data["position"]["z"]), 
@@ -84,7 +92,7 @@ public class Player : MonoBehaviour
 
     void Start() {
         for(var i = 0; i < players.Length; i++) {
-            players[i] = new PlayerList() { playerId = i, position = new Vector3(0, 0, 0), state = PlayerState.nullState };
+            players[i] = new PlayerList() { playerId = i, position = new Vector3(0, 0, 0), state = PlayerState.nullState, playerName = "EmptyPlayerSlot" };
         }
         localPlayerStats.state = PlayerState.initializing;
     }
