@@ -45,31 +45,41 @@ wss.on('connection', function connection(ws) {
         switch(jsonData.type) {
             case "initial":
                 const newPlayerID = playerList.findIndex(x => x.state === 0);
-                playerList[newPlayerID] = {
-                    id: newPlayerID,
-                    name: jsonData.name,
-                    position: { x: 0, y: 0, z: 0 },
-                    state: 1
-                };                
-                
-                console.log("Generated ID: " + playerList[newPlayerID].id + `${jsonData.name}` + " | PlayerList: " + JSON.stringify(playerList));
-                ws.send(JSON.stringify({
-                    type: "initial_response",
-                    id: newPlayerID,
-                    name: jsonData.name,
-                    position: {x: 0, y: 0, z: 0},
-                    state: 1
-                }));
+                if(newPlayerID !== -1) {
 
-                wss.clients.forEach(function each(client) {
-                    client.send(JSON.stringify({
-                        type: "add_player",
+                    playerList[newPlayerID] = {
+                        id: newPlayerID,
+                        name: jsonData.name,
+                        position: { x: 0, y: 0, z: 0 },
+                        state: 1
+                    };                
+                    
+                    console.log("Generated ID: " + playerList[newPlayerID].id + `${jsonData.name}` + " | PlayerList: " + JSON.stringify(playerList));
+                    ws.send(JSON.stringify({
+                        type: "initial_response",
                         id: newPlayerID,
                         name: jsonData.name,
                         position: {x: 0, y: 0, z: 0},
-                        state: 1,
+                        state: 1
                     }));
-                });
+
+                    wss.clients.forEach(function each(client) {
+                        client.send(JSON.stringify({
+                            type: "add_player",
+                            id: newPlayerID,
+                            name: jsonData.name,
+                            position: {x: 0, y: 0, z: 0},
+                            state: 1,
+                        }));
+                    });
+                } else {
+                    // Json Object for error
+                    ws.send(JSON.stringify({
+                        type: "error",
+                        message: "Server is full!"
+                    }));
+                    ws.close(1013, "full-server");
+                }
                 break;
             case "get_all_connected_clients":
                 // return all connected clients to the client
