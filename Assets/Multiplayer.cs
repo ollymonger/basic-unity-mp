@@ -107,6 +107,7 @@ public class Multiplayer : MonoBehaviour
             var players = data["playerList"];
             player.localPlayerStats.state = Player.PlayerState.idle;
             foreach(var client in players){
+                if(client["state"] != null && client["state"].ToObject<int>() > 0){
                     int playerid;
                     Vector3 position;
                     playerid = client["id"].ToObject<int>();
@@ -123,6 +124,7 @@ public class Multiplayer : MonoBehaviour
                     Debug.Log(json.ToString());
                     player.AddPlayer(json);
                 }
+            }
         }
   }
 
@@ -163,7 +165,7 @@ public class Multiplayer : MonoBehaviour
         if(websocket.State == WebSocketState.Open){
             var playerToUpdate = player.GetPlayer(data["id"].ToObject<int>());
 
-            if(playerToUpdate.playerObject == null){
+            if(playerToUpdate.playerObject == null && player.localPlayerStats.state >= Player.PlayerState.readyToGetOthers){
                 var obj = new JObject();
 
                 obj["playerId"] = data["id"].ToObject<int>();
