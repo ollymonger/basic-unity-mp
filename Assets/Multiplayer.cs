@@ -28,6 +28,7 @@ public class Multiplayer : MonoBehaviour
 
         websocket.OnClose += (e) =>
         {
+            Debug.Log(e.ToString());
         };
 
         websocket.OnMessage += (bytes) =>
@@ -86,8 +87,13 @@ public class Multiplayer : MonoBehaviour
 
   void HandleInitialResponse(JObject data){
       if(websocket.State == WebSocketState.Open){
-          player.localPlayerStats.playerId = data["id"].ToObject<int>();
-          SendGetAllConnectedClients();
+          if(data["type"].ToObject<string>() == "error"){
+              Debug.Log("Error: " + data["message"].ToObject<string>());
+              websocket.Close();
+        } else {
+            player.localPlayerStats.playerId = data["id"].ToObject<int>();
+            SendGetAllConnectedClients();
+          }
       }
   }
 
