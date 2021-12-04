@@ -37,9 +37,10 @@ public class Player : MonoBehaviour
     public LocalPlayerStats localPlayerStats = new LocalPlayerStats();
 
     public void AddPlayer(JObject data) {
-        // push the data to player list
         int playerId = (int)data["playerId"];
+
         if(localPlayerStats.playerId == players[playerId].playerId){
+            
             players[playerId] = new PlayerList() { 
                 playerId = playerId, 
                 position = new Vector3((float)data["position"]["x"], 
@@ -48,8 +49,10 @@ public class Player : MonoBehaviour
                 state = (PlayerState)data["state"].ToObject<int>(),
                 playerObject = transform.gameObject
             };
+
             players[playerId].playerObject.GetComponent<Player>().localPlayerStats.isLocalPlayer = true;
         } else {
+
             players[playerId] = new PlayerList() { 
                 playerId = playerId, 
                 position = new Vector3((float)data["position"]["x"], 
@@ -61,6 +64,7 @@ public class Player : MonoBehaviour
             players[playerId].playerObject.GetComponent<Multiplayer>().enabled = false;
             
             players[playerId].playerObject.GetComponent<Player>().localPlayerStats.isLocalPlayer = false;
+        
         }
     }
 
@@ -74,7 +78,6 @@ public class Player : MonoBehaviour
     }
 
     public PlayerList GetPlayer(int id){
-        // return player from playerList at index of id
         return players[id];
     }
 
@@ -92,7 +95,7 @@ public class Player : MonoBehaviour
     }
 
     void Move() {
-        // move the player based on wasd
+        // Improve this
         if(Input.GetKey(KeyCode.W)){
             transform.position += new Vector3(0, 0, 0.1f);
         }

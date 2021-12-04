@@ -32,7 +32,6 @@ public class Multiplayer : MonoBehaviour
 
         websocket.OnMessage += (bytes) =>
         {
-            // convert bytes to json
             var json = System.Text.Encoding.UTF8.GetString(bytes);
             var obj = JObject.Parse(json);
             // handle message.type
@@ -53,16 +52,11 @@ public class Multiplayer : MonoBehaviour
                 default:
                     break;
             }
-            
-        // getting the message as a string
-        // var message = System.Text.Encoding.UTF8.GetString(bytes);
-        // Debug.Log("OnMessage! " + message);
         };
 
         // Keep sending messages at every 0.3s
         InvokeRepeating("SendUpdatePositionMessage", 0.0f, 0.3f);
 
-        // waiting for messages
         await websocket.Connect();
   }
 
@@ -75,11 +69,9 @@ public class Multiplayer : MonoBehaviour
 
   async void SendInitialMessage() {
       if(websocket.State == WebSocketState.Open){
-            // Send an initial message to the server, to hit a specific endpoint
             var message = new JObject();
             message["type"] = "initial";
             message["name"] = "Player";
-            // convert json  to byte
             var json = System.Text.Encoding.UTF8.GetBytes(message.ToString());
             await websocket.Send(json);
       }
@@ -98,7 +90,6 @@ public class Multiplayer : MonoBehaviour
             var message = new JObject();
             message["type"] = "get_all_connected_clients";
             message["id"] = player.localPlayerStats.playerId;
-            // convert json  to byte
             var json = System.Text.Encoding.UTF8.GetBytes(message.ToString());
             await websocket.Send(json);
         }
@@ -109,15 +100,12 @@ public class Multiplayer : MonoBehaviour
         if(websocket.State == WebSocketState.Open){
             var players = data["playerList"];
             player.localPlayerStats.state = Player.PlayerState.idle;
-            // for each players in players array
             foreach(var client in players){
-                // if player id is not equal to local player id
-                    // push this client to the player list
                     int playerid;
                     Vector3 position;
                     playerid = client["id"].ToObject<int>();
                     position = new Vector3(client["position"]["x"].ToObject<float>(), client["position"]["y"].ToObject<float>(), client["position"]["z"].ToObject<float>());
-                    // Createjson object
+
                     var json = new JObject();
                     json["playerId"] = playerid;
                     json["position"] = new JObject();
@@ -141,18 +129,15 @@ public class Multiplayer : MonoBehaviour
             message["position"]["y"] = player.transform.position.y;
             message["position"]["z"] = player.transform.position.z;
             message["state"] = player.localPlayerStats.state.ToString();
-            // convert json  to byte
             var json = System.Text.Encoding.UTF8.GetBytes(message.ToString());
             await websocket.Send(json);
         }
     }
     void HandleUpdatePositionResponse(JObject data){
         if(websocket.State == WebSocketState.Open){
-            // select specific player from list using data.id
             var playerToUpdate = player.GetPlayer(data["id"].ToObject<int>());
 
             if(playerToUpdate.playerObject != null){
-                // update player position
                 var obj = new JObject();
 
                 obj["playerId"] = data["id"].ToObject<int>();
@@ -169,11 +154,9 @@ public class Multiplayer : MonoBehaviour
 
     void HandleAddPlayer(JObject data){
         if(websocket.State == WebSocketState.Open){
-            // select specific player from list using data.id
             var playerToUpdate = player.GetPlayer(data["id"].ToObject<int>());
 
             if(playerToUpdate.playerObject == null){
-                // update player position
                 var obj = new JObject();
 
                 obj["playerId"] = data["id"].ToObject<int>();
