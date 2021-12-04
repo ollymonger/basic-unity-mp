@@ -64,7 +64,10 @@ wss.on('connection', function connection(ws) {
             case "update_position":
                 // update the player's position
                 console.log("PlayerID: " + jsonData.id + " has updated their position");
-                console.log(playerList[jsonData.id]);
+                // update the player in the playerList array
+                playerList[jsonData.id].position = jsonData.position;
+                playerList[jsonData.id].state = jsonData.state;
+                
                 // send this update to all connected clients
                 wss.clients.forEach(function each(client) {
                     client.send(JSON.stringify({
