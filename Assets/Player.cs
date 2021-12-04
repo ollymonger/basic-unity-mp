@@ -123,6 +123,6 @@ public class Player : MonoBehaviour
 
         transform.position = Vector3.Lerp(transform.position, transform.position + movement, 0.1f);
 
-        Camera.main.transform.position = new Vector3(transform.position.x + 0.33f, Camera.main.transform.position.y, transform.position.z - 5.1f);
+        Camera.main.transform.position = new Vector3(transform.position.x + 1.27f, Camera.main.transform.position.y, transform.position.z - 3.95f);
     }
 }
