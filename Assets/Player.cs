@@ -61,6 +61,7 @@ public class Player : MonoBehaviour
                 state = (PlayerState)data["state"].ToObject<int>(),
                 playerObject = Instantiate(transform.gameObject)
             };
+            players[playerId].playerObject.transform.position = players[playerId].position;
             players[playerId].playerObject.GetComponent<Multiplayer>().enabled = false;
             
             players[playerId].playerObject.GetComponent<Player>().localPlayerStats.isLocalPlayer = false;
