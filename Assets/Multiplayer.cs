@@ -112,7 +112,7 @@ public class Multiplayer : MonoBehaviour
                     json["position"]["x"] = position.x;
                     json["position"]["y"] = position.y;
                     json["position"]["z"] = position.z;
-                    json["state"] = client["state"].ToObject<string>();
+                    json["state"] = client["state"].ToObject<int>();
                     Debug.Log(json.ToString());
                     player.AddPlayer(json);
                 }
@@ -128,7 +128,7 @@ public class Multiplayer : MonoBehaviour
             message["position"]["x"] = player.transform.position.x;
             message["position"]["y"] = player.transform.position.y;
             message["position"]["z"] = player.transform.position.z;
-            message["state"] = player.localPlayerStats.state.ToString();
+            message["state"] = ((int)player.localPlayerStats.state);
             var json = System.Text.Encoding.UTF8.GetBytes(message.ToString());
             await websocket.Send(json);
         }
@@ -140,8 +140,8 @@ public class Multiplayer : MonoBehaviour
             if(playerToUpdate.playerObject != null){
                 var obj = new JObject();
 
-                obj["playerId"] = data["id"].ToObject<int>();
-                obj["state"] = data["state"].ToObject<int>();
+                obj["playerId"] = data["id"];
+                obj["state"] = data["state"];
                 obj["position"] = new JObject();
                 obj["position"]["x"] = data["position"]["x"].ToObject<float>();
                 obj["position"]["y"] = data["position"]["y"].ToObject<float>();
