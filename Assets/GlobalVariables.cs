@@ -7,6 +7,10 @@ public class GlobalVariables : MonoBehaviour
 {
     public static GlobalVariables Instance;
 
+    public GameObject mainMenu;
+
+    public GameObject multiplayerMenu;
+
     public bool connectToServer = false;
 
     public string IPAddress = "";
@@ -25,6 +29,19 @@ public class GlobalVariables : MonoBehaviour
         // Load Game Scene using SceneManager
         SceneManager.LoadScene("GAME");
         connectToServer = false;
+    }
+
+    public void OpenMultiplayerMenu(){
+        mainMenu.SetActive(false);
+        multiplayerMenu.SetActive(true);
+    }
+
+    public void UpdateName(string name){
+        selectedName = name;
+    }
+
+    public void UpdateIP(string IP){
+        IPAddress = IP;
     }
 
     void Start()
