@@ -18,6 +18,23 @@ interface PlayerList {
 
 let playerList: PlayerList[] = [];
 
+// Setup empty playerlist with null values
+function setupPlayerList() {
+    console.log("Server setup has begun!");
+    // Change this to be a variable shared from a config
+    for (let i = 0; i < 10; i++) {
+        playerList.push({
+            id: i,
+            name: "EmptyPlayerSlot",
+            position: { x: 0, y: 0, z: 0 },
+            state: 0
+        });
+        console.log("EmptyPlayerSlot " + i + " has been added to the list.");
+    }
+};
+
+setupPlayerList();
+
 // listen to the websocket server
 wss.on('connection', function connection(ws) {
     console.log("A client is trying to connect!");
@@ -27,18 +44,15 @@ wss.on('connection', function connection(ws) {
         const jsonData = JSON.parse(message.toString());
         switch(jsonData.type) {
             case "initial":
-                // Generate a new player ID based off of the length of PlayerList array
-                const newPlayerID = playerList.length;
-                // Add the new player to the playerList array
-                playerList.push({
+                const newPlayerID = playerList.findIndex(x => x.state === 0);
+                playerList[newPlayerID] = {
                     id: newPlayerID,
                     name: jsonData.name,
-                    position: {x: 0, y: 0, z: 0},
+                    position: { x: 0, y: 0, z: 0 },
                     state: 1
-                });
+                };                
                 
-                console.log("Generated ID: " + newPlayerID + `${jsonData.name}` + " | PlayerList: " + JSON.stringify(playerList));
-                // return this new player's ID to the client
+                console.log("Generated ID: " + playerList[newPlayerID].id + `${jsonData.name}` + " | PlayerList: " + JSON.stringify(playerList));
                 ws.send(JSON.stringify({
                     type: "initial_response",
                     id: newPlayerID,
@@ -66,25 +80,29 @@ wss.on('connection', function connection(ws) {
                 }));
                 break;
             case "update_position":
-                // update the player's position
-                console.log("PlayerID: " + jsonData.id + " has updated their position");
-                // update the player in the playerList array
-                playerList[jsonData.id].position = jsonData.position;
-                playerList[jsonData.id].state = jsonData.state;
-                
-                // send this update to all connected clients
-                wss.clients.forEach(function each(client) {
-                    client.send(JSON.stringify({
-                        type: "update_position_response",
-                        id: jsonData.id,
-                        position: jsonData.position,
-                        state: playerList[jsonData.id].state
-                    }));
-                });
+                if(jsonData.state != 0){
+                    console.log("PlayerID: " + jsonData.id + " has updated their position");
+                    playerList[jsonData.id].position = jsonData.position;
+                    playerList[jsonData.id].state = jsonData.state;
+                    
+                    wss.clients.forEach(function each(client) {
+                        client.send(JSON.stringify({
+                            type: "update_position_response",
+                            id: jsonData.id,
+                            position: jsonData.position,
+                            state: playerList[jsonData.id].state
+                        }));
+                    });
+                }
                 break;
             case "disconnect":
                 console.log("PlayerID: " + jsonData.id + " has disconnected");
-                playerList.splice(jsonData.id, 1);
+                playerList[jsonData.id] = {
+                    id: jsonData.id,
+                    name: "EmptyPlayerSlot",
+                    position: { x: 0, y: 0, z: 0 },
+                    state: 0
+                };
                 wss.clients.forEach(function each(client) {
                     client.send(JSON.stringify({
                         type: "disconnect_response",
