@@ -49,6 +49,9 @@ public class Multiplayer : MonoBehaviour
                 case "add_player":
                     HandleAddPlayer(obj);
                     break;
+                case "disconnect_response":
+                    HandleDisconnectResponse(obj);
+                    break;
                 default:
                     break;
             }
@@ -171,6 +174,16 @@ public class Multiplayer : MonoBehaviour
                 obj["position"]["z"] = data["position"]["z"].ToObject<float>();
 
                 player.AddPlayer(obj);
+            }            
+        }
+    }
+
+    void HandleDisconnectResponse(JObject data){
+        if(websocket.State == WebSocketState.Open){
+            var playerToRemove = player.GetPlayer(data["id"].ToObject<int>());
+
+            if(playerToRemove.playerObject != null){
+                player.RemovePlayer(data["id"].ToObject<int>());
             }            
         }
     }
