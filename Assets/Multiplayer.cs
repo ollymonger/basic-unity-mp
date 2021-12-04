@@ -8,66 +8,71 @@ using NativeWebSocket;
 
 public class Multiplayer : MonoBehaviour
 {
-    WebSocket websocket;
+    public WebSocket websocket;
 
     public Player player;
 
     async void Start()
     {
-        websocket = new WebSocket("ws://localhost:3000");
+        if(GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer)
+            {
+            websocket = new WebSocket("ws://localhost:3000");
 
-        websocket.OnOpen += () =>
-        {
-            Debug.Log("Connected");
-            SendInitialMessage();
-        };
+            websocket.OnOpen += () =>
+            {
+                Debug.Log("Connected");
+                SendInitialMessage();
+            };
 
-        websocket.OnError += (e) =>
-        {
-        };
+            websocket.OnError += (e) =>
+            {
+            };
 
-        websocket.OnClose += (e) =>
-        {
-            Debug.Log(e.ToString());
-        };
+            websocket.OnClose += (e) =>
+            {
+                Debug.Log(e.ToString());
+            };
 
-        websocket.OnMessage += (bytes) =>
-        {
-            var json = System.Text.Encoding.UTF8.GetString(bytes);
-            var obj = JObject.Parse(json);
-            // handle message.type
-            switch(obj["type"].ToString()){
-                case "initial_response":
-                    HandleInitialResponse(obj);
-                    player.localPlayerStats.state = Player.PlayerState.readyToGetOthers;
-                    break;
-                case "get_all_connected_clients_response":
-                    HandleGetAllConnectedClientsResponse(obj);
-                    break;
-                case "update_position_response":
-                    HandleUpdatePositionResponse(obj);
-                    break;
-                case "add_player":
-                    HandleAddPlayer(obj);
-                    break;
-                case "disconnect_response":
-                    HandleDisconnectResponse(obj);
-                    break;
-                default:
-                    break;
-            }
-        };
+            websocket.OnMessage += (bytes) =>
+            {
+                var json = System.Text.Encoding.UTF8.GetString(bytes);
+                var obj = JObject.Parse(json);
+                // handle message.type
+                switch(obj["type"].ToString()){
+                    case "initial_response":
+                        HandleInitialResponse(obj);
+                        player.localPlayerStats.state = Player.PlayerState.readyToGetOthers;
+                        break;
+                    case "get_all_connected_clients_response":
+                        HandleGetAllConnectedClientsResponse(obj);
+                        break;
+                    case "update_position_response":
+                        HandleUpdatePositionResponse(obj);
+                        break;
+                    case "add_player":
+                        HandleAddPlayer(obj);
+                        break;
+                    case "disconnect_response":
+                        HandleDisconnectResponse(obj);
+                        break;
+                    default:
+                        break;
+                }
+            };
 
-        // Keep sending messages at every 0.3s
-        InvokeRepeating("SendUpdatePositionMessage", 0.0f, 0.3f);
+            // Keep sending messages at every 0.3s
+            InvokeRepeating("SendUpdatePositionMessage", 0.0f, 0.3f);
 
-        await websocket.Connect();
+            await websocket.Connect();
+        }
   }
 
     void Update()
     {
         #if !UNITY_WEBGL || UNITY_EDITOR
-        websocket.DispatchMessageQueue();
+        if(GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer){
+            websocket.DispatchMessageQueue();
+        }
         #endif
     }
 
