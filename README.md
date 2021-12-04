@@ -15,7 +15,7 @@ The server has been written in Typescript and is used with ts-node.
 - Server sets its playerList up so that all the values match an EmptyPlayerSlot, (state: nullState).
 - The ```Multiplayer.cs/Player.cs``` client connects to the remote server.
 - Once connected, the client sends an initial JSON object ```json { type: "initial", name: "Player" }```.
-- Server responds with a initialResponse json object to the client, with the localPlayer's playerId, name, position and state. ```json { type: "initial_response", id: id, name: name, position: position, state: 1 }```
+- Server responds with either a initialResponse json object to the client, with the localPlayer's playerId, name, position and state. ```json { type: "initial_response", id: id, name: name, position: position, state: 1 }``` or an error response stating an error reason.
 - - Local Player handles this response and sets its playerID to the returned ID
 - Server also sends an "add_player" message containing the new players data to all connected clients
 - - Other clients set the new player in their playerList
