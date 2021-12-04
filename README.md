@@ -28,6 +28,12 @@ The server has been written in Typescript and is used with ts-node.
 - - Server sets the individuals playerList item back to EmptyPlayerSlot and sends this message back to all clients
 - - Client remomes the disconnected player from their local playerList and destroys  the gameobject.
 
+### Player workflow
+Implement a menu, allowing the user to select singleplayer, or multiplayer.
+- Scene must contain: GlobalVariables so that the user can send their connectToServer variable to the game scene.
+- - Multiplayer Menu, allow players to select username & a target IP address (set global variables.);
+- - Singleplayer Menu, allow player to select spawn and load game scene!
+
 ### Things to add
 - Implement way to select IP and username
 - Lerp movement
