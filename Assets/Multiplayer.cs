@@ -175,9 +175,14 @@ public class Multiplayer : MonoBehaviour
         }
     }
 
-  private async void OnApplicationQuit()
-  {
-    await websocket.Close();
-  }
+    private async void OnApplicationQuit()
+    {
+        var disconnectMessage = new JObject();
+        disconnectMessage["type"] = "disconnect";
+        disconnectMessage["id"] = player.localPlayerStats.playerId;
+        var json = System.Text.Encoding.UTF8.GetBytes(disconnectMessage.ToString());
+        await websocket.Send(json);
+        await websocket.Close();
+    }
     
 }
