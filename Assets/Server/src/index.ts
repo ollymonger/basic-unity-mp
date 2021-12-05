@@ -104,7 +104,7 @@ wss.on('connection', function connection(ws) {
                         playerList[jsonData.id].position = jsonData.position;
                         playerList[jsonData.id].rotation = jsonData.rotation;
                         
-                        wss.clients.forEach(function each(client) {    
+                        wss.clients.forEach(function each(client) {
                             if(client != ws) {
                                 let asJson = JSON.stringify({
                                     type: "update_position_and_rotation_response",

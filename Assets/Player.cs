@@ -113,7 +113,10 @@ public class Player : MonoBehaviour
         return players[id];
     }
 
+      private Vector3 offset;
+
     void Start() {
+        offset = new Vector3(transform.position.x, transform.position.y + 8.0f, transform.position.z + 7.0f);
         for(var i = 0; i < players.Length; i++) {
             players[i] = new PlayerList() { playerId = i, position = new Vector3(0, 0, 0), state = PlayerState.nullState, playerName = "EmptyPlayerSlot" };
         }
@@ -133,13 +136,7 @@ public class Player : MonoBehaviour
     }
 
     void Move() {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
-        transform.position = Vector3.Lerp(transform.position, transform.position + movement, 0.1f);
-
-        Camera.main.transform.position = new Vector3(transform.position.x + 1.27f, Camera.main.transform.position.y, transform.position.z - 3.95f);
+        transform.Translate(Vector3.forward * Input.GetAxis("Vertical") * 0.1f);
+        transform.Translate(Vector3.right * Input.GetAxis("Horizontal") * 0.1f);
     }
 }
