@@ -61,7 +61,7 @@ public class Multiplayer : MonoBehaviour
             };
 
             // Keep sending messages at every 0.3s
-            InvokeRepeating("SendUpdatePositionAndRotationMessage", 0.0005f, 0.025f);
+            InvokeRepeating("SendUpdatePositionAndRotationMessage", 0.001f, 0.015f);
 
             await websocket.Connect();
         }
