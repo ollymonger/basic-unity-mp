@@ -146,28 +146,33 @@ public class Multiplayer : MonoBehaviour
 
     async void SendUpdatePositionAndRotationMessage(){
         if(websocket.State == WebSocketState.Open && player.localPlayerStats.state == Player.PlayerState.idle){
-            var message = new JObject();
-            message["type"] = "update_position_and_rotation";
-            message["id"] = player.localPlayerStats.playerId;
-            message["position"] = new JObject();
-            message["position"]["x"] = player.transform.position.x;
-            message["position"]["y"] = player.transform.position.y;
-            message["position"]["z"] = player.transform.position.z;
-            message["rotation"] = new JObject();
-            message["rotation"]["x"] = player.transform.rotation.x;
-            message["rotation"]["y"] = player.transform.rotation.y;
-            message["rotation"]["z"] = player.transform.rotation.z;
-            message["rotation"]["w"] = player.transform.rotation.w;
+            // Check to see if the player has even moved 
+            
+            if(transform.GetComponent<Rigidbody>().velocity.magnitude > 0)
+            {
+                var message = new JObject();
+                message["type"] = "update_position_and_rotation";
+                message["id"] = player.localPlayerStats.playerId;
+                message["position"] = new JObject();
+                message["position"]["x"] = player.transform.position.x;
+                message["position"]["y"] = player.transform.position.y;
+                message["position"]["z"] = player.transform.position.z;
+                message["rotation"] = new JObject();
+                message["rotation"]["x"] = player.transform.rotation.x;
+                message["rotation"]["y"] = player.transform.rotation.y;
+                message["rotation"]["z"] = player.transform.rotation.z;
+                message["rotation"]["w"] = player.transform.rotation.w;
 
-            message["state"] = ((int)player.localPlayerStats.state);
-            var json = System.Text.Encoding.UTF8.GetBytes(message.ToString());
-            await websocket.Send(json);
+                message["state"] = ((int)player.localPlayerStats.state);
+                var json = System.Text.Encoding.UTF8.GetBytes(message.ToString());
+                await websocket.Send(json);
+            }
         }
     }
     void HandleUpdatePositionAndRotationResponse(JObject data){
-        if(websocket.State == WebSocketState.Open){
+        if(websocket.State == WebSocketState.Open && data["id"].ToObject<int>() != player.localPlayerStats.playerId){
             var playerToUpdate = player.GetPlayer(data["id"].ToObject<int>());
-
+            Debug.Log(data.ToString());
             if(playerToUpdate.playerObject != null){
                 var obj = new JObject();
 

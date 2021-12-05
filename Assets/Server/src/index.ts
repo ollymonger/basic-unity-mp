@@ -40,6 +40,8 @@ setupPlayerList();
 // listen to the websocket server
 wss.on('connection', function connection(ws) {
     console.log("A client is trying to connect!");
+    // assign an ID to this client
+    
     // listen to the message event
     ws.on('message', function incoming(message) {
         // convert RawData to json object
@@ -95,21 +97,26 @@ wss.on('connection', function connection(ws) {
                 break;
             case "update_position_and_rotation":
                 if(jsonData.state != 0){
-                    console.log("PlayerID: " + jsonData.id + " has updated their position and rotation.");
-                    playerList[jsonData.id].position = jsonData.position;
-                    playerList[jsonData.id].rotation = jsonData.rotation;
-                    playerList[jsonData.id].state = jsonData.state;
-                    let index = 0;
+                    
+                    if(playerList[jsonData.id].position != jsonData.position){
+                        console.log("PlayerID: " + jsonData.id + " has updated their position and rotation.");
+
+                        playerList[jsonData.id].position = jsonData.position
+                        playerList[jsonData.id].rotation = jsonData.rotation;
+                    }
+
                     wss.clients.forEach(function each(client) {
-                        if(index != jsonData.id) {
-                            client.send(JSON.stringify({
+                        if(client != ws) {
+                            let asJson = JSON.stringify({
                                 type: "update_position_and_rotation_response",
                                 id: jsonData.id,
                                 position: jsonData.position,
                                 rotation: jsonData.rotation,
                                 state: playerList[jsonData.id].state
-                            })); 
-                            index++;
+                            })
+                            // convert asJson to Byte Array
+                            let asByte = Buffer.from(asJson);
+                            client.send(asByte); 
                         }
                     });
                 }

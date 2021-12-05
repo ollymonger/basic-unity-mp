@@ -89,20 +89,18 @@ public class Player : MonoBehaviour
     }
 
     public void UpdatePlayer(JObject data){
-        if(data["position"] != null && data["rotation"] != null){
-            int playerId = (int)data["playerId"];
-            players[playerId].position = new Vector3((float)data["position"]["x"], 
-            (float)data["position"]["y"], 
-            (float)data["position"]["z"]);
-            players[playerId].rotation = new Quaternion((float)data["rotation"]["x"],
-            (float)data["rotation"]["y"],
-            (float)data["rotation"]["z"],
-            (float)data["rotation"]["w"]);
+        int playerId = (int)data["playerId"];
+        players[playerId].position = new Vector3((float)data["position"]["x"], 
+        (float)data["position"]["y"], 
+        (float)data["position"]["z"]);
+        players[playerId].rotation = new Quaternion((float)data["rotation"]["x"],
+        (float)data["rotation"]["y"],
+        (float)data["rotation"]["z"],
+        (float)data["rotation"]["w"]);
 
-            players[playerId].state = (PlayerState)data["state"].ToObject<int>();
-            players[playerId].playerObject.transform.position = players[playerId].position;
-            players[playerId].playerObject.transform.rotation = players[playerId].rotation;
-        }
+        players[playerId].state = (PlayerState)data["state"].ToObject<int>();
+        players[playerId].playerObject.transform.position = players[playerId].position;
+        players[playerId].playerObject.transform.rotation = players[playerId].rotation;
     }
 
     public void RemovePlayer(int data){
