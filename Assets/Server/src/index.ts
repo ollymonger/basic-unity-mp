@@ -59,7 +59,7 @@ wss.on('connection', function connection(ws) {
                         state: 1
                     };                
                     
-                    console.log("Generated ID: " + playerList[newPlayerID].id + `${jsonData.name}` + " | PlayerList: " + JSON.stringify(playerList));
+                    console.log("Generated ID: " + playerList[newPlayerID].id + ` ${jsonData.name} & added to the list.`);
                     ws.send(JSON.stringify({
                         type: "initial_response",
                         id: newPlayerID,
