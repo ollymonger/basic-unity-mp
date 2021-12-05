@@ -35,6 +35,4 @@ Implement a menu, allowing the user to select singleplayer, or multiplayer.
 - - Singleplayer Menu, allow player to select spawn and load game scene!
 
 ### Things to add
-- Implement way to select IP and username
-- Lerp movement
-- Rotation
+- Fix syncing issue, one player is not receiving any updates, but is sending them!
