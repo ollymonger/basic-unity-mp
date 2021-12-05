@@ -46,8 +46,8 @@ public class Multiplayer : MonoBehaviour
                     case "get_all_connected_clients_response":
                         HandleGetAllConnectedClientsResponse(obj);
                         break;
-                    case "update_position_response":
-                        HandleUpdatePositionResponse(obj);
+                    case "update_position_and_rotation_response":
+                        HandleUpdatePositionAndRotationResponse(obj);
                         break;
                     case "add_player":
                         HandleAddPlayer(obj);
@@ -61,7 +61,7 @@ public class Multiplayer : MonoBehaviour
             };
 
             // Keep sending messages at every 0.3s
-            InvokeRepeating("SendUpdatePositionMessage", 0.0f, 0.3f);
+            InvokeRepeating("SendUpdatePositionAndRotationMessage", 0.0005f, 0.025f);
 
             await websocket.Connect();
         }
@@ -131,6 +131,11 @@ public class Multiplayer : MonoBehaviour
                     json["position"]["x"] = position.x;
                     json["position"]["y"] = position.y;
                     json["position"]["z"] = position.z;
+                    json["rotation"] = new JObject();
+                    json["rotation"]["x"] = client["rotation"]["x"].ToObject<float>();
+                    json["rotation"]["y"] = client["rotation"]["y"].ToObject<float>();
+                    json["rotation"]["z"] = client["rotation"]["z"].ToObject<float>();
+                    json["rotation"]["w"] = client["rotation"]["w"].ToObject<float>();
                     json["state"] = client["state"].ToObject<int>();
                     Debug.Log(json.ToString());
                     player.AddPlayer(json);
@@ -139,21 +144,27 @@ public class Multiplayer : MonoBehaviour
         }
   }
 
-    async void SendUpdatePositionMessage(){
+    async void SendUpdatePositionAndRotationMessage(){
         if(websocket.State == WebSocketState.Open && player.localPlayerStats.state == Player.PlayerState.idle){
             var message = new JObject();
-            message["type"] = "update_position";
+            message["type"] = "update_position_and_rotation";
             message["id"] = player.localPlayerStats.playerId;
             message["position"] = new JObject();
             message["position"]["x"] = player.transform.position.x;
             message["position"]["y"] = player.transform.position.y;
             message["position"]["z"] = player.transform.position.z;
+            message["rotation"] = new JObject();
+            message["rotation"]["x"] = player.transform.rotation.x;
+            message["rotation"]["y"] = player.transform.rotation.y;
+            message["rotation"]["z"] = player.transform.rotation.z;
+            message["rotation"]["w"] = player.transform.rotation.w;
+
             message["state"] = ((int)player.localPlayerStats.state);
             var json = System.Text.Encoding.UTF8.GetBytes(message.ToString());
             await websocket.Send(json);
         }
     }
-    void HandleUpdatePositionResponse(JObject data){
+    void HandleUpdatePositionAndRotationResponse(JObject data){
         if(websocket.State == WebSocketState.Open){
             var playerToUpdate = player.GetPlayer(data["id"].ToObject<int>());
 
@@ -166,6 +177,11 @@ public class Multiplayer : MonoBehaviour
                 obj["position"]["x"] = data["position"]["x"].ToObject<float>();
                 obj["position"]["y"] = data["position"]["y"].ToObject<float>();
                 obj["position"]["z"] = data["position"]["z"].ToObject<float>();
+                obj["rotation"] = new JObject();
+                obj["rotation"]["x"] = data["rotation"]["x"].ToObject<float>();
+                obj["rotation"]["y"] = data["rotation"]["y"].ToObject<float>();
+                obj["rotation"]["z"] = data["rotation"]["z"].ToObject<float>();
+                obj["rotation"]["w"] = data["rotation"]["w"].ToObject<float>();
 
                 player.UpdatePlayer(obj);
             }            
@@ -185,6 +201,11 @@ public class Multiplayer : MonoBehaviour
                 obj["position"]["x"] = data["position"]["x"].ToObject<float>();
                 obj["position"]["y"] = data["position"]["y"].ToObject<float>();
                 obj["position"]["z"] = data["position"]["z"].ToObject<float>();
+                obj["rotation"] = new JObject();
+                obj["rotation"]["x"] = data["rotation"]["x"].ToObject<float>();
+                obj["rotation"]["y"] = data["rotation"]["y"].ToObject<float>();
+                obj["rotation"]["z"] = data["rotation"]["z"].ToObject<float>();
+                obj["rotation"]["w"] = data["rotation"]["w"].ToObject<float>();
 
                 player.AddPlayer(obj);
             }            
