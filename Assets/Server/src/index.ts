@@ -13,7 +13,7 @@ interface PlayerList {
     id: number;
     name: string;
     position: { x: number; y: number, z: number };
-    rotation: { x: number; y: number, z: number };
+    rotation: { x: number; y: number, z: number, w: number };
     state: number;
 }
 
@@ -28,7 +28,7 @@ function setupPlayerList() {
             id: i,
             name: "EmptyPlayerSlot",
             position: { x: 0, y: 0, z: 0 },
-            rotation: { x: 0, y: 0, z: 0 },
+            rotation: { x: 0, y: 0, z: 0, w: 0 },
             state: 0
         });
         console.log("EmptyPlayerSlot " + i + " has been added to the list.");
@@ -53,7 +53,7 @@ wss.on('connection', function connection(ws) {
                         id: newPlayerID,
                         name: jsonData.name,
                         position: { x: 0, y: 0, z: 0 },
-                        rotation: { x: 0, y: 0, z: 0 },
+                        rotation: { x: 0, y: 0, z: 0, w: 0 },
                         state: 1
                     };                
                     
@@ -63,6 +63,7 @@ wss.on('connection', function connection(ws) {
                         id: newPlayerID,
                         name: jsonData.name,
                         position: {x: 0, y: 0, z: 0},
+                        rotation: { x: 0, y: 0, z: 0, w: 0 },
                         state: 1
                     }));
 
@@ -72,7 +73,7 @@ wss.on('connection', function connection(ws) {
                             id: newPlayerID,
                             name: jsonData.name,
                             position: {x: 0, y: 0, z: 0},
-                            rotation: {x: 0, y: 0, z: 0},
+                            rotation: { x: 0, y: 0, z: 0, w: 0 },
                             state: 1,
                         }));
                     });
@@ -92,35 +93,24 @@ wss.on('connection', function connection(ws) {
                     playerList: playerList
                 }));
                 break;
-            case "update_position":
+            case "update_position_and_rotation":
                 if(jsonData.state != 0){
-                    console.log("PlayerID: " + jsonData.id + " has updated their position");
+                    console.log("PlayerID: " + jsonData.id + " has updated their position and rotation.");
                     playerList[jsonData.id].position = jsonData.position;
-                    playerList[jsonData.id].state = jsonData.state;
-                    
-                    wss.clients.forEach(function each(client) {
-                        client.send(JSON.stringify({
-                            type: "update_position_response",
-                            id: jsonData.id,
-                            position: jsonData.position,
-                            state: playerList[jsonData.id].state
-                        }));
-                    });
-                }
-                break;
-            case "update_rotation":
-                if(jsonData.state != 0){
-                    console.log("PlayerID: " + jsonData.id + " has updated their rotation");
                     playerList[jsonData.id].rotation = jsonData.rotation;
                     playerList[jsonData.id].state = jsonData.state;
+                    let index = 0;
                     wss.clients.forEach(function each(client) {
-                    
-                    client.send(JSON.stringify({
-                            type: "update_position_response",
-                            id: jsonData.id,
-                            rotation: jsonData.rotation,
-                            state: jsonData.state
-                        }));
+                        if(index != jsonData.id) {
+                            client.send(JSON.stringify({
+                                type: "update_position_and_rotation_response",
+                                id: jsonData.id,
+                                position: jsonData.position,
+                                rotation: jsonData.rotation,
+                                state: playerList[jsonData.id].state
+                            })); 
+                            index++;
+                        }
                     });
                 }
                 break;
@@ -130,7 +120,7 @@ wss.on('connection', function connection(ws) {
                     id: jsonData.id,
                     name: "EmptyPlayerSlot",
                     position: { x: 0, y: 0, z: 0 },
-                    rotation: { x: 0, y: 0, z: 0 },
+                    rotation: { x: 0, y: 0, z: 0, w: 0 },
                     state: 0
                 };
                 wss.clients.forEach(function each(client) {
