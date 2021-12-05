@@ -4,6 +4,11 @@ Thanks for checking out this repo.
 Currently a WIP for the readme! Check back soon.
 Feel free to use this as an example!
 
+### Server global dependancies
+The following are required for submitting builds.
+- ```npm i -g typescript``` - for the tsc compiler
+- ```npm i -g pkg``` - to package the server into an .exe/macfile/linuxfile
+
 ### Server Setup
 The server has been written in Typescript and is used with ts-node.
 - To begin: 
