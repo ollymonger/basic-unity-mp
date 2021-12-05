@@ -115,7 +115,7 @@ public class Multiplayer : MonoBehaviour
     void HandleGetAllConnectedClientsResponse(JObject data){
       
         if(websocket.State == WebSocketState.Open){
-            var players = data["playerList"];
+            var players = data["players"];
             player.localPlayerStats.state = Player.PlayerState.idle;
             foreach(var client in players){
                 if(client["state"] != null && client["state"].ToObject<int>() > 0){

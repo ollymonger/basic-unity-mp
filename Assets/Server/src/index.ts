@@ -90,10 +90,12 @@ wss.on('connection', function connection(ws) {
             case "get_all_connected_clients":
                 // return all connected clients to the client
                 console.log("PlayerID: " + jsonData.id + " has requested all connected clients");
-                ws.send(JSON.stringify({
+                let response = `{
                     type: "get_all_connected_clients_response",
-                    playerList: playerList
-                }));
+                    players: ${JSON.stringify(playerList)}
+                }`
+
+                ws.send(Buffer.from(response));
                 break;
             case "update_position_and_rotation":
                 if(jsonData.state != 0){
