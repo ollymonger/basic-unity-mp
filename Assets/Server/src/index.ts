@@ -99,26 +99,24 @@ wss.on('connection', function connection(ws) {
                 if(jsonData.state != 0){
                     
                     if(playerList[jsonData.id].position != jsonData.position){
-                        console.log("PlayerID: " + jsonData.id + " has updated their position and rotation.");
-
-                        playerList[jsonData.id].position = jsonData.position
+                        playerList[jsonData.id].position = jsonData.position;
                         playerList[jsonData.id].rotation = jsonData.rotation;
-                    }
 
-                    wss.clients.forEach(function each(client) {
-                        if(client != ws) {
-                            let asJson = JSON.stringify({
-                                type: "update_position_and_rotation_response",
-                                id: jsonData.id,
-                                position: jsonData.position,
-                                rotation: jsonData.rotation,
-                                state: playerList[jsonData.id].state
-                            })
-                            // convert asJson to Byte Array
-                            let asByte = Buffer.from(asJson);
-                            client.send(asByte); 
-                        }
-                    });
+                        wss.clients.forEach(function each(client) {
+                            if(client != ws) {
+                                let asJson = JSON.stringify({
+                                    type: "update_position_and_rotation_response",
+                                    id: jsonData.id,
+                                    position: jsonData.position,
+                                    rotation: jsonData.rotation,
+                                    state: playerList[jsonData.id].state
+                                })
+                                // convert asJson to Byte Array
+                                let asByte = Buffer.from(asJson);
+                                client.send(asByte); 
+                            }
+                        });
+                    }
                 }
                 break;
             case "disconnect":
