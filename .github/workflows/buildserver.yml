@@ -31,6 +31,7 @@ jobs:
             npm run deploy
       - name: Zip windows executable
         run: |
+          cd Assets/Server
           zip -r server.zip index-win.exe
       - name: Create Release
         id: create_release
