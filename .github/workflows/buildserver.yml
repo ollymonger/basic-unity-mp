@@ -29,7 +29,6 @@ jobs:
             cd Assets/Server/
             npm i
             npm run deploy
-      - uses: actions/checkout@v2
       - name: Zip windows executable
         run: |
           zip -r server.zip index-win.exe
