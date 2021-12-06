@@ -41,6 +41,10 @@ public class Player : MonoBehaviour
         public PlayerState state;
 
         public bool isLocalPlayer;
+
+        public Canvas playerCanvas;
+
+        public TMPro.TMP_Text playerNameText;
     }
     [SerializeField]
     public LocalPlayerStats localPlayerStats = new LocalPlayerStats();
@@ -68,10 +72,9 @@ public class Player : MonoBehaviour
                 state = (PlayerState)data["state"].ToObject<int>(),
                 playerObject = transform.gameObject
             };
-
+            players[playerId].playerObject.transform.GetChild(0).GetComponent<Canvas>().enabled = false;
             players[playerId].playerObject.GetComponent<Player>().localPlayerStats.isLocalPlayer = true;
         } else {
-
             players[playerId] = new PlayerList() { 
                 playerId = playerId, 
                 playerName = (string)data["playerName"],
@@ -88,9 +91,10 @@ public class Player : MonoBehaviour
             players[playerId].playerObject.transform.position = players[playerId].position;
             players[playerId].playerObject.transform.rotation = players[playerId].rotation;
             players[playerId].playerObject.GetComponent<Multiplayer>().enabled = false;
-            
             players[playerId].playerObject.GetComponent<Player>().localPlayerStats.isLocalPlayer = false;
-        
+            players[playerId].playerObject.GetComponent<Player>().localPlayerStats.playerName = players[playerId].playerName;
+            players[playerId].playerObject.transform.GetChild(0).GetComponent<Canvas>().enabled = true;
+            players[playerId].playerObject.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TMP_Text>().SetText(players[playerId].playerName);
         }
     }
 
@@ -128,7 +132,10 @@ public class Player : MonoBehaviour
         }
         Cursor.visible = false;
         localPlayerStats.state = PlayerState.initializing;
-        localPlayerStats.playerName = GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().selectedName;
+6        localPlayerStats.playerCanvas = transform.GetChild(0).GetComponent<Canvas>();
+        localPlayerStats.playerNameText = localPlayerStats.playerCanvas.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TMP_Text>();
+        localPlayerStats.playerNameText.SetText(localPlayerStats.playerName);
+        localPlayerStats.playerCanvas.worldCamera = Camera.main;
         if(GameObject.Find("GlobalVariables") != null && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
             localPlayerStats.playerId = 0;
             localPlayerStats.isLocalPlayer = true;

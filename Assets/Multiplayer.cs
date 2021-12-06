@@ -201,6 +201,7 @@ public class Multiplayer : MonoBehaviour
                 var obj = new JObject();
 
                 obj["playerId"] = data["id"].ToObject<int>();
+                obj["playerName"] = data["name"].ToObject<string>();
                 obj["state"] = data["state"].ToObject<int>();
                 obj["position"] = new JObject();
                 obj["position"]["x"] = data["position"]["x"].ToObject<float>();
