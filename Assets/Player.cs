@@ -42,6 +42,10 @@ public class Player : MonoBehaviour
 
         public bool isLocalPlayer;
 
+        public Transform cameraLookAt;
+
+        public Vector3 cameraOffset;
+
         public Canvas playerCanvas;
 
         public TMPro.TMP_Text playerNameText;
@@ -142,11 +146,20 @@ public class Player : MonoBehaviour
         
         // listen to fire binding context
         fireBindings.started += ctx => Fire();
+
+
         
         if(GameObject.Find("GlobalVariables") != null && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
             localPlayerStats.playerId = 0;
             localPlayerStats.isLocalPlayer = true;
             localPlayerStats.state = PlayerState.idle;
+        }
+
+        if(localPlayerStats.isLocalPlayer){
+            localPlayerStats.cameraLookAt = transform.Find("CameraLookAt");
+            if(localPlayerStats.cameraLookAt == null){
+                localPlayerStats.cameraLookAt = transform;
+            }
         }
     }
 
@@ -161,35 +174,43 @@ public class Player : MonoBehaviour
     float turnSmoothVelocity;
     Vector3 velocity;
 
+    public float damping = 0.1f;
     void Update() {
         if(localPlayerStats.isLocalPlayer){
-            Vector2 movement = movementBindings.ReadValue<Vector2>();
-            Vector3 movementVector = new Vector3(movement.x, 0, movement.y);
+            // get look delta
+            Vector2 lookDelta = lookBindings.ReadValue<Vector2>();
 
-            Vector2 look = lookBindings.ReadValue<Vector2>();
-            Vector3 lookVector = new Vector3(look.x, 0, look.y);
-            float targetAngle = Mathf.Atan2(lookVector.x, lookVector.z) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, 0.1f);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            Vector2 mouseInput = new Vector3();
 
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            Vector3 moveVelocity = movementVector.z * moveDir + movementVector.x * transform.right;
-            velocity = moveVelocity * 10.0f;
-            Vector3 targetPosition = transform.position + velocity * Time.deltaTime;
-            transform.position = targetPosition;
+            mouseInput.x = Mathf.Lerp(mouseInput.x, lookDelta.x * 90, Time.deltaTime * new Vector2(1,0).magnitude);
 
-            offset = Quaternion.AngleAxis(look.x * 0.5f, Vector3.up) * offset;
-            Camera.main.transform.position = transform.position + offset; 
-            Camera.main.transform.LookAt(transform.position);
+            transform.Rotate(Vector3.up * mouseInput.x * 0.5f);
+
+
+            Vector3 targetPosition = localPlayerStats.cameraLookAt.position + transform.forward * 
+            localPlayerStats.cameraOffset.z + transform.up * localPlayerStats.cameraOffset.y +
+            transform.right * localPlayerStats.cameraOffset.x;
+
+            Quaternion targetRotation = Quaternion.LookRotation(transform.Find("CameraLookAt").position - targetPosition, Vector3.up);
+
+            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPosition, damping * Time.deltaTime);
+            Camera.main.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, targetRotation, damping * Time.deltaTime);
+
         }
     }
 
     void Fire() {
-        // Send this command to the server
-        var data = new JObject();
-        data["playerId"] = localPlayerStats.playerId;
-        data["type"] = "fire";
-        transform.GetComponent<Multiplayer>().SendCommand(data);
+        if(localPlayerStats.isLocalPlayer){
+            // Send this command to the server
+            var data = new JObject();
+            data["id"] = localPlayerStats.playerId;
+            data["type"] = "fire";
+            transform.GetComponent<Multiplayer>().SendCommand(data);
+            // Get center of the screen in world position
+            Vector3 center = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane));
+            // Shoot a raycast from the center of the screen
+            Ray ray = Camera.main.ScreenPointToRay(center);
+        }
     }
 
     void LateUpdate(){

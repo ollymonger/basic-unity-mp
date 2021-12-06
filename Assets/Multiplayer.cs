@@ -52,6 +52,9 @@ public class Multiplayer : MonoBehaviour
                     case "add_player":
                         HandleAddPlayer(obj);
                         break;
+                    case "fire_response":
+                        Debug.Log(obj);
+                        break;
                     case "disconnect_response":
                         HandleDisconnectResponse(obj);
                         break;
