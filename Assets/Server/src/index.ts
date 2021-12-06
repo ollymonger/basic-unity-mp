@@ -139,6 +139,14 @@ wss.on('connection', function connection(ws) {
                 });
             case "fire":
                 console.log("PlayerID: " + jsonData.id + " has fired");
+                wss.clients.forEach(function each(client) {
+                    if(client != ws) {
+                        client.send(Buffer.from(JSON.stringify({
+                            type: "fire_response",
+                            id: jsonData.id,
+                        })));
+                    }
+                });
                 break;
             default:
                 break;
