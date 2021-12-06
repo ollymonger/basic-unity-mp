@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Newtonsoft.Json.Linq;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -43,6 +44,11 @@ public class Player : MonoBehaviour
     }
     [SerializeField]
     public LocalPlayerStats localPlayerStats = new LocalPlayerStats();
+
+    private Localplayer bindings;
+    private InputAction movementBindings;
+
+    private InputAction lookBindings;
 
     public void AddPlayer(JObject data) {
         int playerId = (int)data["playerId"];
@@ -120,6 +126,7 @@ public class Player : MonoBehaviour
         for(var i = 0; i < players.Length; i++) {
             players[i] = new PlayerList() { playerId = i, position = new Vector3(0, 0, 0), state = PlayerState.nullState, playerName = "EmptyPlayerSlot" };
         }
+        Cursor.visible = false;
         localPlayerStats.state = PlayerState.initializing;
         localPlayerStats.playerName = GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().selectedName;
         if(GameObject.Find("GlobalVariables") != null && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
@@ -129,14 +136,42 @@ public class Player : MonoBehaviour
         }
     }
 
+    void Awake() {
+        bindings = new Localplayer();
+        bindings.Enable();
+        movementBindings = bindings.Player.Move;
+        lookBindings = bindings.Player.Look;
+    }
+
+    float turnSmoothVelocity;
+    Vector3 velocity;
+
     void Update() {
         if(localPlayerStats.isLocalPlayer){
-            Move();
+            Vector2 movement = movementBindings.ReadValue<Vector2>();
+            Vector3 movementVector = new Vector3(movement.x, 0, movement.y);
+
+            Vector2 look = lookBindings.ReadValue<Vector2>();
+            Vector3 lookVector = new Vector3(look.x, 0, look.y);
+            float targetAngle = Mathf.Atan2(lookVector.x, lookVector.z) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, 0.1f);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            Vector3 moveVelocity = movementVector.z * moveDir + movementVector.x * transform.right;
+            velocity = moveVelocity * 10.0f;
+            Vector3 targetPosition = transform.position + velocity * Time.deltaTime;
+            transform.position = targetPosition;
+
+            offset = Quaternion.AngleAxis(look.x * 0.5f, Vector3.up) * offset;
+            Camera.main.transform.position = transform.position + offset; 
+            Camera.main.transform.LookAt(transform.position);
         }
     }
 
-    void Move() {
-        transform.Translate(Vector3.forward * Input.GetAxis("Vertical") * 0.1f);
-        transform.Translate(Vector3.right * Input.GetAxis("Horizontal") * 0.1f);
+    void LateUpdate(){
+        if(localPlayerStats.isLocalPlayer){
+          // Get look Delta
+        }
     }
 }
