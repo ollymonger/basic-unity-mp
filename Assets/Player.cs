@@ -75,6 +75,8 @@ public class Player : MonoBehaviour
             players[playerId].playerObject.transform.GetChild(0).GetComponent<Canvas>().enabled = false;
             players[playerId].playerObject.GetComponent<Player>().localPlayerStats.isLocalPlayer = true;
         } else {
+            GameObject clone = Instantiate(transform.gameObject);
+            clone.name = (string)data["playerName"];
             players[playerId] = new PlayerList() { 
                 playerId = playerId, 
                 playerName = (string)data["playerName"],
@@ -86,7 +88,7 @@ public class Player : MonoBehaviour
                 (float)data["rotation"]["z"],
                 (float)data["rotation"]["w"]),
                 state = (PlayerState)data["state"].ToObject<int>(),
-                playerObject = Instantiate(transform.gameObject)
+                playerObject = clone
             };
             players[playerId].playerObject.transform.position = players[playerId].position;
             players[playerId].playerObject.transform.rotation = players[playerId].rotation;
@@ -133,9 +135,9 @@ public class Player : MonoBehaviour
         Cursor.visible = false;
         localPlayerStats.state = PlayerState.initializing;
         localPlayerStats.playerCanvas = transform.GetChild(0).GetComponent<Canvas>();
-        
         localPlayerStats.playerNameText = localPlayerStats.playerCanvas.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TMP_Text>();
         localPlayerStats.playerNameText.SetText(localPlayerStats.playerName);
+        Debug.Log("Player Name: " + localPlayerStats.playerName);
         localPlayerStats.playerCanvas.worldCamera = Camera.main;
         if(GameObject.Find("GlobalVariables") != null && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
             localPlayerStats.playerId = 0;
