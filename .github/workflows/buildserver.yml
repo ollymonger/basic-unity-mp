@@ -33,18 +33,20 @@ jobs:
         run: |
           cd Assets/Server
           zip -r server-win.zip index-win.exe
+          zip -r server-linux.zip index-linux
+          zip -r server-macos-zip index-maxos
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:          
-          tag_name: ${{ github.ref }}
-          release_name: Windows Server Release
+          tag_name: build
+          release_name: Server Release
           draft: false
           prerelease: false
-      - name: Upload Release Asset
-        id: upload-release-asset 
+      - name: Upload Windows Release Asset
+        id: upload-win-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,5 +54,25 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: ./Assets/Server/server-win.zip
           asset_name: server-win.zip
+          asset_content_type: application/zip
+      - name: Upload Linux Release Asset
+        id: upload-linux-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./Assets/Server/server-linux.zip
+          asset_name: server-linux.zip
+          asset_content_type: application/zip
+      - name: Upload Macos Release Asset
+        id: upload-macos-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./Assets/Server/server-macos.zip
+          asset_name: server-macos.zip
           asset_content_type: application/zip
 
