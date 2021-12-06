@@ -96,7 +96,7 @@ public class Player : MonoBehaviour
             players[playerId].playerObject.GetComponent<Player>().localPlayerStats.isLocalPlayer = false;
             players[playerId].playerObject.GetComponent<Player>().localPlayerStats.playerName = players[playerId].playerName;
             players[playerId].playerObject.transform.GetChild(0).GetComponent<Canvas>().enabled = true;
-            players[playerId].playerObject.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TMP_Text>().SetText(players[playerId].playerName);
+            players[playerId].playerObject.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMPro.TMP_Text>().SetText(players[playerId].playerName);
         }
     }
 
