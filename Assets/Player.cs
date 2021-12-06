@@ -51,8 +51,8 @@ public class Player : MonoBehaviour
 
     private Localplayer bindings;
     private InputAction movementBindings;
-
     private InputAction lookBindings;
+    private InputAction fireBindings;
 
     public void AddPlayer(JObject data) {
         int playerId = (int)data["playerId"];
@@ -139,6 +139,10 @@ public class Player : MonoBehaviour
         localPlayerStats.playerNameText.SetText(localPlayerStats.playerName);
         Debug.Log("Player Name: " + localPlayerStats.playerName);
         localPlayerStats.playerCanvas.worldCamera = Camera.main;
+        
+        // listen to fire binding context
+        fireBindings.started += ctx => Fire();
+        
         if(GameObject.Find("GlobalVariables") != null && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
             localPlayerStats.playerId = 0;
             localPlayerStats.isLocalPlayer = true;
@@ -151,6 +155,7 @@ public class Player : MonoBehaviour
         bindings.Enable();
         movementBindings = bindings.Player.Move;
         lookBindings = bindings.Player.Look;
+        fireBindings = bindings.Player.Fire;
     }
 
     float turnSmoothVelocity;
@@ -177,6 +182,14 @@ public class Player : MonoBehaviour
             Camera.main.transform.position = transform.position + offset; 
             Camera.main.transform.LookAt(transform.position);
         }
+    }
+
+    void Fire() {
+        // Send this command to the server
+        var data = new JObject();
+        data["playerId"] = localPlayerStats.playerId;
+        data["type"] = "fire";
+        transform.GetComponent<Multiplayer>().SendCommand(data);
     }
 
     void LateUpdate(){

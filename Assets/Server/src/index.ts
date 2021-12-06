@@ -137,6 +137,9 @@ wss.on('connection', function connection(ws) {
                         id: jsonData.id
                     }));
                 });
+            case "fire":
+                console.log("PlayerID: " + jsonData.id + " has fired");
+                break;
             default:
                 break;
         }
