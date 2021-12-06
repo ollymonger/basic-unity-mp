@@ -34,7 +34,7 @@ jobs:
           cd Assets/Server
           zip -r server-win.zip index-win.exe
           zip -r server-linux.zip index-linux
-          zip -r server-macos-zip index-maxos
+          zip -r server-macos-zip index-macos
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
