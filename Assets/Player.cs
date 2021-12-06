@@ -132,7 +132,7 @@ public class Player : MonoBehaviour
         }
         Cursor.visible = false;
         localPlayerStats.state = PlayerState.initializing;
-6        localPlayerStats.playerCanvas = transform.GetChild(0).GetComponent<Canvas>();
+        localPlayerStats.playerCanvas = transform.GetChild(0).GetComponent<Canvas>();
         localPlayerStats.playerNameText = localPlayerStats.playerCanvas.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TMP_Text>();
         localPlayerStats.playerNameText.SetText(localPlayerStats.playerName);
         localPlayerStats.playerCanvas.worldCamera = Camera.main;
