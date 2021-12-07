@@ -196,20 +196,24 @@ public class Player : MonoBehaviour
             Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPosition, damping * Time.deltaTime);
             Camera.main.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, targetRotation, damping * Time.deltaTime);
 
+            // Get movement input
+            Vector2 movementInput = movementBindings.ReadValue<Vector2>();
+            Vector3 move = transform.forward * movementInput.y + transform.right * movementInput.x;
+            velocity = move * 4f;
+            transform.position += velocity * Time.deltaTime;
         }
     }
 
     void Fire() {
-        if(localPlayerStats.isLocalPlayer){
-            // Send this command to the server
+        if(localPlayerStats.isLocalPlayer && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == true) {
             var data = new JObject();
             data["id"] = localPlayerStats.playerId;
             data["type"] = "fire";
             transform.GetComponent<Multiplayer>().SendCommand(data);
-            // Get center of the screen in world position
             Vector3 center = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane));
-            // Shoot a raycast from the center of the screen
             Ray ray = Camera.main.ScreenPointToRay(center);
+        } else if(localPlayerStats.isLocalPlayer && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
+            Debug.Log("Local player has shot!");
         }
     }
 

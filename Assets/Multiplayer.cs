@@ -116,12 +116,14 @@ public class Multiplayer : MonoBehaviour
   }
 
     public void SendCommand(JObject data){
-        if((string)data["type"].ToObject<string>() == "fire") {
-            if(websocket.State == WebSocketState.Open){
-                var json = System.Text.Encoding.UTF8.GetBytes(data.ToString());
-                websocket.Send(json);
+        if(websocket.State == WebSocketState.Open){
+            if((string)data["type"].ToObject<string>() == "fire") {
+                if(websocket.State == WebSocketState.Open){
+                    var json = System.Text.Encoding.UTF8.GetBytes(data.ToString());
+                    websocket.Send(json);
+                }
             }
-        }    
+        }
     }
 
     void HandleGetAllConnectedClientsResponse(JObject data){
