@@ -148,18 +148,15 @@ public class Player : MonoBehaviour
         fireBindings.started += ctx => Fire();
 
 
+        localPlayerStats.cameraLookAt = transform.Find("CameraLookAt");
+        if(localPlayerStats.cameraLookAt == null){
+            localPlayerStats.cameraLookAt = transform;
+        }
         
         if(GameObject.Find("GlobalVariables") != null && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
             localPlayerStats.playerId = 0;
             localPlayerStats.isLocalPlayer = true;
             localPlayerStats.state = PlayerState.idle;
-        }
-
-        if(localPlayerStats.isLocalPlayer){
-            localPlayerStats.cameraLookAt = transform.Find("CameraLookAt");
-            if(localPlayerStats.cameraLookAt == null){
-                localPlayerStats.cameraLookAt = transform;
-            }
         }
     }
 
