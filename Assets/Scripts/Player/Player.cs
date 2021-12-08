@@ -48,6 +48,8 @@ public class Player : MonoBehaviour
 
         public Canvas playerCanvas;
 
+        public WeaponSO currentWeapon;
+
         public TMPro.TMP_Text playerNameText;
     }
     [SerializeField]
@@ -145,7 +147,7 @@ public class Player : MonoBehaviour
         localPlayerStats.playerCanvas.worldCamera = Camera.main;
         
         // listen to fire binding context
-        fireBindings.started += ctx => Fire();
+        fireBindings.started += ctx => localPlayerStats.currentWeapon.Fire();
 
 
         localPlayerStats.cameraLookAt = transform.Find("CameraLookAt");
