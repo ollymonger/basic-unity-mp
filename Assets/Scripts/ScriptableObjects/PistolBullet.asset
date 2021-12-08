@@ -9,12 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f2ac99d30e670e4ca8fa1007f57fca8, type: 3}
-  m_Name: Pistol
+  m_Script: {fileID: 11500000, guid: f54a4059278d31f47a3a83532110304d, type: 3}
+  m_Name: PistolBullet
   m_EditorClassIdentifier: 
-  WeaponName: Pistol
-  ClipMax: 12
-  WeaponDamage: 0
-  WeaponRange: 0
-  WeaponPrefab: {fileID: 3639597164209603616, guid: 8f2423701f14d764f888a759ec7c94e2,
-    type: 3}
+  prefab: {fileID: 2609790351024065670, guid: aebf3aff2e47035499186c973088994a, type: 3}
+  speed: 4
+  damage: 2
+  lifeTime: 3

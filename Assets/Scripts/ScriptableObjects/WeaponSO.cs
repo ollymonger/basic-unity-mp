@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-[CreateAssetMenu(fileName = "New WeaponSO", menuName = "WeaponSO")]
+[CreateAssetMenu(fileName = "New WeaponSO", menuName = "ScriptableObjects/WeaponSO")]
 
 public class WeaponSO : ScriptableObject
 {
@@ -17,6 +17,8 @@ public class WeaponSO : ScriptableObject
 
     public GameObject WeaponPrefab;
 
+    public BulletSO bullet;
+
     public WeaponSO(WeaponSO playerWeapon){
         playerWeapon.name = WeaponName;
         playerWeapon.ClipMax = ClipMax;
@@ -24,9 +26,5 @@ public class WeaponSO : ScriptableObject
         playerWeapon.WeaponDamage = WeaponDamage;
         playerWeapon.WeaponRange = WeaponRange;
         playerWeapon.WeaponPrefab = WeaponPrefab;
-    }
-
-    public void Fire() {
-        Debug.Log("Firing");
     }
 }

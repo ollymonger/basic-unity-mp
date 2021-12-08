@@ -146,8 +146,7 @@ public class Player : MonoBehaviour
         Debug.Log("Player Name: " + localPlayerStats.playerName);
         localPlayerStats.playerCanvas.worldCamera = Camera.main;
         
-        // listen to fire binding context
-        fireBindings.started += ctx => localPlayerStats.currentWeapon.Fire();
+        fireBindings.started += ctx => transform.GetComponent<WeaponsHandler>().Fire();
 
 
         localPlayerStats.cameraLookAt = transform.Find("CameraLookAt");
@@ -201,19 +200,6 @@ public class Player : MonoBehaviour
             Vector3 move = transform.forward * movementInput.y + transform.right * movementInput.x;
             velocity = move * 4f;
             transform.position += velocity * Time.deltaTime;
-        }
-    }
-
-    void Fire() {
-        if(localPlayerStats.isLocalPlayer && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == true) {
-            var data = new JObject();
-            data["id"] = localPlayerStats.playerId;
-            data["type"] = "fire";
-            transform.GetComponent<Multiplayer>().SendCommand(data);
-            Vector3 center = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane));
-            Ray ray = Camera.main.ScreenPointToRay(center);
-        } else if(localPlayerStats.isLocalPlayer && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
-            Debug.Log("Local player has shot!");
         }
     }
 
