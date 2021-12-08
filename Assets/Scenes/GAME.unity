@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18154588, g: 0.22718863, b: 0.3074058, a: 1}
+  m_IndirectSpecularColor: {r: 0.18154529, g: 0.22718799, b: 0.3074045, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -42538,22 +42538,7 @@ PrefabInstance:
     - target: {fileID: 1566461895622138546, guid: 4a4d6ef240644c942afd8734ba86da08,
         type: 3}
       propertyPath: damping
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1566461895622138546, guid: 4a4d6ef240644c942afd8734ba86da08,
-        type: 3}
-      propertyPath: localPlayerStats.cameraOffset.x
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1566461895622138546, guid: 4a4d6ef240644c942afd8734ba86da08,
-        type: 3}
-      propertyPath: localPlayerStats.cameraOffset.y
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1566461895622138546, guid: 4a4d6ef240644c942afd8734ba86da08,
-        type: 3}
-      propertyPath: localPlayerStats.cameraOffset.z
-      value: -12
       objectReference: {fileID: 0}
     - target: {fileID: 1566461895622138551, guid: 4a4d6ef240644c942afd8734ba86da08,
         type: 3}

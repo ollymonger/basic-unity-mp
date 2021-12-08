@@ -157,6 +157,7 @@ public class Player : MonoBehaviour
             localPlayerStats.playerId = 0;
             localPlayerStats.isLocalPlayer = true;
             localPlayerStats.state = PlayerState.idle;
+            localPlayerStats.playerName = "Player";
         }
     }
 
@@ -171,7 +172,7 @@ public class Player : MonoBehaviour
     float turnSmoothVelocity;
     Vector3 velocity;
 
-    public float damping = 0.1f;
+    public float damping = 2f;
     void Update() {
         if(localPlayerStats.isLocalPlayer){
             // get look delta
@@ -179,7 +180,7 @@ public class Player : MonoBehaviour
 
             Vector2 mouseInput = new Vector3();
 
-            mouseInput.x = Mathf.Lerp(mouseInput.x, lookDelta.x * 90, Time.deltaTime * new Vector2(1,0).magnitude);
+            mouseInput.x = Mathf.Lerp(mouseInput.x, lookDelta.x * 90, Time.deltaTime * damping);
 
             transform.Rotate(Vector3.up * mouseInput.x * 0.5f);
 

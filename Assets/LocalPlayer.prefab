@@ -242,10 +242,10 @@ MonoBehaviour:
     state: 0
     isLocalPlayer: 0
     cameraLookAt: {fileID: 0}
-    cameraOffset: {x: 0, y: 0, z: 0}
+    cameraOffset: {x: 3, y: 2, z: -12}
     playerCanvas: {fileID: 0}
     playerNameText: {fileID: 0}
-  damping: 0.1
+  damping: 4
 --- !u!23 &1566461895622138545
 MeshRenderer:
   m_ObjectHideFlags: 0
