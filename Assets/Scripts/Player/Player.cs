@@ -148,7 +148,6 @@ public class Player : MonoBehaviour
         
         fireBindings.started += ctx => transform.GetComponent<WeaponsHandler>().Fire();
 
-
         localPlayerStats.cameraLookAt = transform.Find("CameraLookAt");
         if(localPlayerStats.cameraLookAt == null){
             localPlayerStats.cameraLookAt = transform;
@@ -182,6 +181,7 @@ public class Player : MonoBehaviour
             Vector2 mouseInput = new Vector3();
 
             mouseInput.x = Mathf.Lerp(mouseInput.x, lookDelta.x * 90, Time.deltaTime * damping);
+            mouseInput.y = Mathf.Lerp(mouseInput.y, lookDelta.y * 90, Time.deltaTime * damping);
 
             transform.Rotate(Vector3.up * mouseInput.x * 0.5f);
 

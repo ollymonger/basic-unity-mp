@@ -18,3 +18,4 @@ MonoBehaviour:
   WeaponRange: 0
   WeaponPrefab: {fileID: 3639597164209603616, guid: 8f2423701f14d764f888a759ec7c94e2,
     type: 3}
+  bullet: {fileID: 11400000, guid: db029aff4aef7d1428964dd184cde9e6, type: 2}
