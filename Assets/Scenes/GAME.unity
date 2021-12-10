@@ -42508,6 +42508,29 @@ Transform:
   m_Father: {fileID: 910141027}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1941299683 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8646931373937950767, guid: 4a4d6ef240644c942afd8734ba86da08,
+    type: 3}
+  m_PrefabInstance: {fileID: 1966643408}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1941299685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941299683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 397867fdf7de4a84c9a3c40be949409d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  crosshairTexture: {fileID: 2800000, guid: dc05baea644712b46bfb50a377fd75b7, type: 3}
+  crosshairScale: 16
+  maxAngle: 95
+  minAngle: -45
+  lookHeight: 0
 --- !u!1001 &1966643408
 PrefabInstance:
   m_ObjectHideFlags: 0

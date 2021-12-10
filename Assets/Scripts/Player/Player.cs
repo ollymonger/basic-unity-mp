@@ -173,6 +173,17 @@ public class Player : MonoBehaviour
     Vector3 velocity;
 
     public float damping = 2f;
+
+    private Crosshair crosshair;
+    private Crosshair Crosshair {
+        get {
+            if(crosshair == null) {
+                crosshair = GetComponentInChildren<Crosshair>();
+            }
+            return crosshair;
+        }
+    }
+
     void Update() {
         if(localPlayerStats.isLocalPlayer){
             // get look delta
@@ -184,6 +195,8 @@ public class Player : MonoBehaviour
             mouseInput.y = Mathf.Lerp(mouseInput.y, lookDelta.y * 90, Time.deltaTime * damping);
 
             transform.Rotate(Vector3.up * mouseInput.x * 0.5f);
+
+            Crosshair.LookHeight(mouseInput.y * 0.5f);
 
 
             Vector3 targetPosition = localPlayerStats.cameraLookAt.position + transform.forward * 
