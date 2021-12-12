@@ -42,7 +42,13 @@ public class Player : MonoBehaviour
 
         public bool isLocalPlayer;
 
+        public Transform cameraLookAt;
+
+        public Vector3 cameraOffset;
+
         public Canvas playerCanvas;
+
+        public WeaponSO currentWeapon;
 
         public TMPro.TMP_Text playerNameText;
     }
@@ -51,8 +57,8 @@ public class Player : MonoBehaviour
 
     private Localplayer bindings;
     private InputAction movementBindings;
-
     private InputAction lookBindings;
+    private InputAction fireBindings;
 
     public void AddPlayer(JObject data) {
         int playerId = (int)data["playerId"];
@@ -139,10 +145,19 @@ public class Player : MonoBehaviour
         localPlayerStats.playerNameText.SetText(localPlayerStats.playerName);
         Debug.Log("Player Name: " + localPlayerStats.playerName);
         localPlayerStats.playerCanvas.worldCamera = Camera.main;
+        
+        fireBindings.started += ctx => transform.GetComponent<WeaponsHandler>().Fire();
+
+        localPlayerStats.cameraLookAt = transform.Find("CameraLookAt");
+        if(localPlayerStats.cameraLookAt == null){
+            localPlayerStats.cameraLookAt = transform;
+        }
+        
         if(GameObject.Find("GlobalVariables") != null && GameObject.Find("GlobalVariables").GetComponent<GlobalVariables>().connectToServer == false) {
             localPlayerStats.playerId = 0;
             localPlayerStats.isLocalPlayer = true;
             localPlayerStats.state = PlayerState.idle;
+            localPlayerStats.playerName = "Player";
         }
     }
 
@@ -151,31 +166,53 @@ public class Player : MonoBehaviour
         bindings.Enable();
         movementBindings = bindings.Player.Move;
         lookBindings = bindings.Player.Look;
+        fireBindings = bindings.Player.Fire;
     }
 
     float turnSmoothVelocity;
     Vector3 velocity;
 
+    public float damping = 2f;
+
+    private Crosshair crosshair;
+    private Crosshair Crosshair {
+        get {
+            if(crosshair == null) {
+                crosshair = GetComponentInChildren<Crosshair>();
+            }
+            return crosshair;
+        }
+    }
+
     void Update() {
         if(localPlayerStats.isLocalPlayer){
-            Vector2 movement = movementBindings.ReadValue<Vector2>();
-            Vector3 movementVector = new Vector3(movement.x, 0, movement.y);
+            // get look delta
+            Vector2 lookDelta = lookBindings.ReadValue<Vector2>();
 
-            Vector2 look = lookBindings.ReadValue<Vector2>();
-            Vector3 lookVector = new Vector3(look.x, 0, look.y);
-            float targetAngle = Mathf.Atan2(lookVector.x, lookVector.z) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, 0.1f);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            Vector2 mouseInput = new Vector3();
 
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            Vector3 moveVelocity = movementVector.z * moveDir + movementVector.x * transform.right;
-            velocity = moveVelocity * 10.0f;
-            Vector3 targetPosition = transform.position + velocity * Time.deltaTime;
-            transform.position = targetPosition;
+            mouseInput.x = Mathf.Lerp(mouseInput.x, lookDelta.x * 90, Time.deltaTime * damping);
+            mouseInput.y = Mathf.Lerp(mouseInput.y, lookDelta.y * 90, Time.deltaTime * damping);
 
-            offset = Quaternion.AngleAxis(look.x * 0.5f, Vector3.up) * offset;
-            Camera.main.transform.position = transform.position + offset; 
-            Camera.main.transform.LookAt(transform.position);
+            transform.Rotate(Vector3.up * mouseInput.x * 0.5f);
+
+            Crosshair.LookHeight(mouseInput.y * 0.5f);
+
+
+            Vector3 targetPosition = localPlayerStats.cameraLookAt.position + transform.forward * 
+            localPlayerStats.cameraOffset.z + transform.up * localPlayerStats.cameraOffset.y +
+            transform.right * localPlayerStats.cameraOffset.x;
+
+            Quaternion targetRotation = Quaternion.LookRotation(transform.Find("CameraLookAt").position - targetPosition, Vector3.up);
+
+            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPosition, damping * Time.deltaTime);
+            Camera.main.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, targetRotation, damping * Time.deltaTime);
+
+            // Get movement input
+            Vector2 movementInput = movementBindings.ReadValue<Vector2>();
+            Vector3 move = transform.forward * movementInput.y + transform.right * movementInput.x;
+            velocity = move * 4f;
+            transform.position += velocity * Time.deltaTime;
         }
     }
 

@@ -52,6 +52,9 @@ public class Multiplayer : MonoBehaviour
                     case "add_player":
                         HandleAddPlayer(obj);
                         break;
+                    case "fire_response":
+                        HandleFireResponse(obj);
+                        break;
                     case "disconnect_response":
                         HandleDisconnectResponse(obj);
                         break;
@@ -111,6 +114,17 @@ public class Multiplayer : MonoBehaviour
             await websocket.Send(json);
         }
   }
+
+    public void SendCommand(JObject data){
+        if(websocket.State == WebSocketState.Open){
+            if((string)data["type"].ToObject<string>() == "fire") {
+                if(websocket.State == WebSocketState.Open){
+                    var json = System.Text.Encoding.UTF8.GetBytes(data.ToString());
+                    websocket.Send(json);
+                }
+            }
+        }
+    }
 
     void HandleGetAllConnectedClientsResponse(JObject data){
       
@@ -193,6 +207,8 @@ public class Multiplayer : MonoBehaviour
         }
     }
 
+
+
     void HandleAddPlayer(JObject data){
         if(websocket.State == WebSocketState.Open){
             var playerToUpdate = player.GetPlayer(data["id"].ToObject<int>());
@@ -225,6 +241,14 @@ public class Multiplayer : MonoBehaviour
             if(playerToRemove.playerObject != null){
                 player.RemovePlayer(data["id"].ToObject<int>());
             }            
+        }
+    }
+
+    public void HandleFireResponse(JObject data){
+        if(websocket.State == WebSocketState.Open){
+            // Get the player that fired the bullet
+            var playerToFire = player.GetPlayer(data["id"].ToObject<int>());
+            playerToFire.playerObject.GetComponent<WeaponsHandler>().ExternalFireHandle();
         }
     }
 
